@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TnD Group Project</title>
+  <style>
+    html, body {
+  overflow-x: hidden;
+}
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+
+    .topbar {
+      width: 100%;
+      background-color: #022d42;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+      flex-wrap: wrap; 
+      box-sizing: border-box
+      
+    }
+
+    .logo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-header img {
+      height: 120px;
+    }
+
+    .logo-header h1 {
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .team {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #fff;
+  flex-shrink: 0;
+  max-width: 120px; 
+  word-wrap: break-word;
+}
+
+    .team-member {
+      display: flex;
+      align-items:center;
+      gap: 10px;
+      margin: 5px 0;
+    }
+
+
+    .main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(5, 77, 87, 0.2);
+      backdrop-filter: blur(5px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 90%;
+      display: none;
+      animation: slideIn 0.7s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color:  #007bff;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 780;
+      color: #000000;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #0c0c0c;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input:hover {
+      background: #c2beb8;
+      color: #100f10;
+      font-weight: 780;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      color: white;
+      font-size: 1rem;
+      font-weight: 780;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddddddc8;
+      padding: 10px;
+      text-align: center;
+      font-weight: 780;
+    }
+
+    th {
+      background-color: rgba(247, 247, 247, 0.979);
+    }
+
+    #output {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo-header">
+      <img src="nitt.jpeg" alt="Logo" />
+      <h1 onclick="toggleForm()">TnD Project</h1>
+    </div>
+    <div class="team">
+      <div class="team-member">
+        
+        <span>NIKHIL 107123071</span>
+      </div>
+      <div class="team-member">
+        
+        <span>DEEPAK 107123025</span>
+      </div>
+      <div class="team-member">
+       
+        <span>VEDANT 107123051</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="container" id="mainContainer">
+      <h2>TnD Group Project</h2>
+      <form id="cableForm">
+        <div class="form-group">
+          <label for="voltage">Nominal Voltage (kV):</label>
+          <input type="number" id="voltage" step="0.1" required />
+        </div>
+        <div class="form-group">
+          <label for="coreDiameter">Core Diameter (cm):</label>
+          <input type="number" id="coreDiameter" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="sheathDiameter">Sheath Diameter (cm):</label>
+          <input type="number" id="sheathDiameter" step="0.01" required />
+        </div>
+        <div class="form-group">
+          <label for="interSheaths">Number of Inter-Sheaths:</label>
+          <input type="number" id="interSheaths" required />
+        </div>
+        <button type="submit">Calculate</button>
+      </form>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script>
+
+
+   //calling a function for calucaltion of voltage at each intersheaths
+
+    function solve(a, n, l) {
+      if (n === 0) return [];
+      let voltage = ((Math.pow(a, n + 1) - a) / ((Math.pow(a, n + 1) - 1))) * l;
+      let rest = solve(a, n - 1, voltage);
+      rest.unshift(voltage / 1000);
+      return rest;  //returning the answer
+    }
+
+    function toggleForm() {
+      const container = document.getElementById("mainContainer");
+      container.style.display = container.style.display === "none" ? "block" : "none";
+    }
+ 
+    //taking input from user
+
+    document.getElementById("cableForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const V = parseFloat(document.getElementById("voltage").value) * 1000;  //taking nominal volatge as input
+      const d = parseFloat(document.getElementById("coreDiameter").value);     //taking core diameter as input
+      const D = parseFloat(document.getElementById("sheathDiameter").value);    //taking sheath diameter as input
+      const n = parseInt(document.getElementById("interSheaths").value);        //taking number of intersheaths as input
+     
+      //converting into radius
+
+      const r0 = d / 2;     //radius of core 
+      const rN1 = D / 2;    //radius of sheath
+
+      //calculating alpha value
+
+      const a = Math.pow(rN1 / r0, 1 / (n + 1));
+     
+      //calculating radius at each intersheaths
+
+      const radii = []; //creating an array of radii
+      let x = r0;
+      for (let i = 1; i <= n; i++) {
+        x = x * a;   //calculating radius at each intersheaths
+        radii.push(x);  //putting them into an array to store
+      }
+     //defing a function for calulation of voltage at each intersheaths
+
+      const voltages = solve(a, n, V);
+
+      const E_with = ((a - 1) * V) / (((Math.pow(a, n + 1) - 1) * (r0 * Math.log(a))) * 1000);   //calculating the Potential Gradient at Core Surface (with inter-sheaths)
+      const E_without = V / ((r0 * (n + 1) * Math.log(a)) * 1000);    //Potential Gradient (without inter-sheaths)
+
+      let html = "<h3>Output</h3>";
+      html += "<table><tr><th>Inter-sheath</th><th>Diameter (cm)</th><th>Voltage (kV)</th></tr>";
+      for (let i = 0; i < n; i++) {
+        html += `<tr><td>${i + 1}</td><td>${(2 * radii[i]).toFixed(2)}</td><td>${voltages[i].toFixed(2)}</td></tr>`;
+      }
+      html += "</table>";
+      html += `<p><strong>Potential Gradient at Core Surface (with inter-sheaths):</strong> ${E_with.toFixed(2)} kV/cm</p>`;
+      html += `<p><strong>Potential Gradient (without inter-sheaths):</strong> ${E_without.toFixed(2)} kV/cm</p>`;
+
+      document.getElementById("output").innerHTML = html;
+    });
+  </script>
+</body>
+</html>
